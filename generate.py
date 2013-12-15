@@ -27,11 +27,14 @@ def list_files(folder_path):
     (str) -> str
     Generator function, yields all .rst files' names from the given path.
     """
-    for name in os.listdir(folder_path):
-        base, ext = os.path.splitext(name)
-        if ext != '.rst':
-            continue
-        yield os.path.join(folder_path, name)
+    try:
+        for name in os.listdir(folder_path):
+            base, ext = os.path.splitext(name)
+            if ext != '.rst':
+                continue
+            yield os.path.join(folder_path, name)
+    except OSError as ex:
+        log.error('Exception occured in list_files: {0}'.format(ex))
 
 
 def read_file(file_path):
@@ -40,16 +43,24 @@ def read_file(file_path):
     Reads file at given path, interprets its content, returning a metadata
     dictionary, that will be used at template render, and text content.
     """
-    with open(file_path, 'rb') as f:
-        raw_metadata = ""
-        for line in f:
-            if line.strip() == '---':
-                break
-            raw_metadata += line
-        content = ""
-        for line in f:
-            content += line
-    return json.loads(raw_metadata), content
+    raw_metadata = ""
+    content = ""
+    try:
+        with open(file_path, 'rb') as f:
+            for line in f:
+                if line.strip() == '---':
+                    break
+                raw_metadata += line
+            for line in f:
+                content += line
+    except IOError as ex:
+        log.error('Open file failed: {0}'.format(ex))
+    try:
+        metadata = json.loads(raw_metadata)
+    except ValueError:
+        log.error('No JSON object found in file {0}'.format(file_path))
+        metadata = {}
+    return metadata, content
 
 
 def write_output(directory, name, html):
@@ -60,7 +71,7 @@ def write_output(directory, name, html):
     """
     if not os.path.isdir(directory):
         os.mkdir(directory)
-    with open(os.path.join(directory, '.'.join(name, 'html')), 'w') as f:
+    with open(os.path.join(directory, '.'.join((name, 'html'))), 'w') as f:
         f.write(beautify(html))
 
 
@@ -75,8 +86,17 @@ def generate_site(folder_path, output_path):
         os.path.join(folder_path, 'layout')))
     for file_path in list_files(folder_path):
         metadata, content = read_file(file_path)
-        template_name = metadata['layout']
-        template = jinja_env.get_template(template_name)
+        try:
+            template_name = metadata['layout']
+        except KeyError:
+            log.error('Incorrect .rst file at: {0}'.format(file_path))
+            continue
+        try:
+            template = jinja_env.get_template(template_name)
+        except jinja2.exceptions.TemplateNotFound:
+            log.error('Jinja template not found: {0}. Check {1} file.'.format(
+                template_name, file_path))
+            continue
         data = dict(metadata, content=content)
         html = template.render(**data)
         name = os.path.splitext(os.path.basename(file_path))[0]
