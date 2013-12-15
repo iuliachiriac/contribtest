@@ -31,20 +31,21 @@ def read_file(file_path):
 
 def write_output(name, html):
     # TODO should not use sys.argv here, it breaks encapsulation
-    with open(os.path.join(sys.argv[2], name + '.html')) as f:
+    with open(os.path.join(sys.argv[2], name + '.html'), 'w') as f:
         f.write(html)
 
 
 def generate_site(folder_path):
     log.info("Generating site from %r", folder_path)
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(
-        folder_path + 'layout'))
+        os.path.join(folder_path, 'layout')))
     for file_path in list_files(folder_path):
         metadata, content = read_file(file_path)
-        template_name = metadata['template']
+        template_name = metadata['layout']
         template = jinja_env.get_template(template_name)
         data = dict(metadata, content=content)
-        html = template(**data)
+        html = template.render(**data)
+        name = os.path.splitext(os.path.basename(file_path))[0]
         write_output(name, html)
         log.info("Writing %r with template %r", name, template_name)
 
