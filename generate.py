@@ -1,8 +1,4 @@
-# generate site from static pages, loosely inspired by Jekyll
-# run like this:
-#   ./generate.py test/source output
-# the generated `output` should be the same as `test/expected_output`
-
+#!/usr/bin/python
 import os
 import logging
 import jinja2
