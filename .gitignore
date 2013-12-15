@@ -1,0 +1,21 @@
+# swap files
+*.swp
+**~
+*.pyc
+*.pyo
+
+# config files
+etc
+
+# log files
+logs
+*.LOG.*
+*.LOG
+*.log
+
+# temp files
+tmp/*
+!tmp/.gitkeep
+
+# output folder
+output
