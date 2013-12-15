@@ -1,4 +1,14 @@
-generate site from static pages, loosely inspired by Jekyll
-run like this:
-  ./generate.py test/source output
-the generated `output` should be the same as `test/expected_output`
+This project is loosely inspired by Jekyll and it generates a site from 
+static pages.
+
+---
+Installation 
+
+1. Clone git repository:
+    git clone https://github.com/iuliachiriac/contribtest.git
+
+2. Run init.sh:
+    ./init.sh
+
+3. Generate the site:
+    ./generate.py test/source output
