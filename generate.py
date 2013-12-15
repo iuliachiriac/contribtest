@@ -3,7 +3,7 @@ import os
 import logging
 import jinja2
 import json
-import sys
+import argparse
 
 log = logging.getLogger(__name__)
 
@@ -29,13 +29,12 @@ def read_file(file_path):
     return json.loads(raw_metadata), content
 
 
-def write_output(name, html):
-    # TODO should not use sys.argv here, it breaks encapsulation
-    with open(os.path.join(sys.argv[2], name + '.html'), 'w') as f:
+def write_output(path, name, html):
+    with open(os.path.join(path, name + '.html'), 'w') as f:
         f.write(html)
 
 
-def generate_site(folder_path):
+def generate_site(folder_path, output_path):
     log.info("Generating site from %r", folder_path)
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(
         os.path.join(folder_path, 'layout')))
@@ -46,12 +45,20 @@ def generate_site(folder_path):
         data = dict(metadata, content=content)
         html = template.render(**data)
         name = os.path.splitext(os.path.basename(file_path))[0]
-        write_output(name, html)
+        write_output(output_path, name, html)
         log.info("Writing %r with template %r", name, template_name)
 
 
 def main():
-    generate_site(sys.argv[1])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("layout_path", help="relative path to the directory "
+                        "containing .rst files with site content and jinja "
+                        "templates that define the site structure")
+    parser.add_argument("output_path", help="relative path to the output "
+                        "directory")
+    arguments = parser.parse_args()
+
+    generate_site(arguments.layout_path, arguments.output_path)
 
 
 if __name__ == '__main__':
