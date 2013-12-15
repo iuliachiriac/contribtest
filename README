@@ -14,6 +14,13 @@ Installation
 3. Generate the site:
     ./generate.py test/source output
 
+4. Run unit tests:
+    - all of the tests:
+    python unittests/run_tests.py
+
+    - only the test you want - test_write_output, for example:
+    python unittests/test_write_output.py
+
 
 =====
 Requirements
