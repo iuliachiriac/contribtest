@@ -6,6 +6,8 @@
 import os
 import logging
 import jinja2
+import json
+import sys
 
 log = logging.getLogger(__name__)
 
@@ -36,7 +38,8 @@ def write_output(name, html):
 
 def generate_site(folder_path):
     log.info("Generating site from %r", folder_path)
-    jinja_env = jinja2.Environment(loader=FileSystemLoader(folder_path + 'layout'))
+    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(
+        folder_path + 'layout'))
     for file_path in list_files(folder_path):
         metadata, content = read_file(file_path)
         template_name = metadata['template']
