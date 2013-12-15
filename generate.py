@@ -19,6 +19,7 @@ def list_files(folder_path):
             continue
         yield os.path.join(folder_path, name)
 
+
 def read_file(file_path):
     with open(file_path, 'rb') as f:
         raw_metadata = ""
@@ -31,10 +32,12 @@ def read_file(file_path):
             content += line
     return json.loads(raw_metadata), content
 
+
 def write_output(name, html):
     # TODO should not use sys.argv here, it breaks encapsulation
-    with open(os.path.join(sys.argv[2], name+'.html')) as f:
+    with open(os.path.join(sys.argv[2], name + '.html')) as f:
         f.write(html)
+
 
 def generate_site(folder_path):
     log.info("Generating site from %r", folder_path)
