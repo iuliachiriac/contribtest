@@ -1,7 +1,8 @@
-This project is loosely inspired by Jekyll and it generates a site from 
-static pages.
+This project generates a site from static pages using Jinja2 templates.
+It is loosely inspired by Jekyll.
 
----
+
+=====
 Installation 
 
 1. Clone git repository:
@@ -12,3 +13,35 @@ Installation
 
 3. Generate the site:
     ./generate.py test/source output
+
+
+=====
+Requirements
+
+1. Python 2.7 (get it from here: http://www.python.org/getit/)
+2. Jinja 2 (see installation guidelines: http://jinja.pocoo.org/docs/intro/)
+
+
+=====
+Usage
+
+1. Define your own .rst files with the following structure:
+-------------------------------------------------------------------------------
+{"layout": "layout_file.html", "template_variable1": "value1", 
+"template_variable2": "value"}
+---
+
+Page content
+-------------------------------------------------------------------------------
+
+2. In the `layout` folder place your jinja2 template files:
+layout_file.html:
+
+-------------------------------------------------------------------------------
+<h1>{{ template_variable1 }}</h1>
+<p>{{ template_variable2 }}</p>
+
+{% block content %}
+{{ content }}
+{% endblock %}
+-------------------------------------------------------------------------------
