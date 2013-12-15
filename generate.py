@@ -29,8 +29,10 @@ def read_file(file_path):
     return json.loads(raw_metadata), content
 
 
-def write_output(path, name, html):
-    with open(os.path.join(path, name + '.html'), 'w') as f:
+def write_output(directory, name, html):
+    if not os.path.isdir(directory):
+        os.mkdir(directory)
+    with open(os.path.join(directory, name + '.html'), 'w') as f:
         f.write(html)
 
 
