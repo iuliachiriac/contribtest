@@ -4,8 +4,15 @@ import logging
 import jinja2
 import json
 import argparse
+import re
 
 log = logging.getLogger(__name__)
+
+
+def beautify(text):
+    text = re.sub('\n{3,}', '\n\n', text)
+    text = re.sub('\n+$', '\n', text)
+    return text
 
 
 def list_files(folder_path):
@@ -33,7 +40,7 @@ def write_output(directory, name, html):
     if not os.path.isdir(directory):
         os.mkdir(directory)
     with open(os.path.join(directory, name + '.html'), 'w') as f:
-        f.write(html)
+        f.write(beautify(html))
 
 
 def generate_site(folder_path, output_path):
