@@ -1,12 +1,14 @@
 #!/usr/bin/python
 import os
 import logging
+import logging.config
 import jinja2
 import json
 import argparse
 import re
 
 log = logging.getLogger(__name__)
+logging.config.fileConfig('etc/log.conf', disable_existing_loggers=False)
 
 
 def beautify(text):
@@ -99,5 +101,4 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig()
     main()
