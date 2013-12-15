@@ -10,12 +10,21 @@ log = logging.getLogger(__name__)
 
 
 def beautify(text):
+    """
+    (str) -> str
+    Replaces 3 or more consecutive newlines with 2 newlines.
+    Removes multiple newlines at the end of the string.
+    """
     text = re.sub('\n{3,}', '\n\n', text)
     text = re.sub('\n+$', '\n', text)
     return text
 
 
 def list_files(folder_path):
+    """
+    (str) -> str
+    Generator function, yields all .rst files' names from the given path.
+    """
     for name in os.listdir(folder_path):
         base, ext = os.path.splitext(name)
         if ext != '.rst':
@@ -24,6 +33,11 @@ def list_files(folder_path):
 
 
 def read_file(file_path):
+    """
+    (str) -> dict, str
+    Reads file at given path, interprets its content, returning a metadata
+    dictionary, that will be used at template render, and text content.
+    """
     with open(file_path, 'rb') as f:
         raw_metadata = ""
         for line in f:
@@ -37,6 +51,11 @@ def read_file(file_path):
 
 
 def write_output(directory, name, html):
+    """
+    (str, str, str) -> None
+    Writes output .html file using the path, filename and content received.
+    Creates output directory if it does not exist.
+    """
     if not os.path.isdir(directory):
         os.mkdir(directory)
     with open(os.path.join(directory, name + '.html'), 'w') as f:
@@ -44,6 +63,11 @@ def write_output(directory, name, html):
 
 
 def generate_site(folder_path, output_path):
+    """
+    (str, str) -> None
+    Initializes jinja environment, creates desired output from the files found
+    in folder_path.
+    """
     log.info("Generating site from %r", folder_path)
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(
         os.path.join(folder_path, 'layout')))
@@ -59,6 +83,10 @@ def generate_site(folder_path, output_path):
 
 
 def main():
+    """
+    () -> None
+    Configures argument parser, generates site files.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("layout_path", help="relative path to the directory "
                         "containing .rst files with site content and jinja "
