@@ -60,7 +60,7 @@ def write_output(directory, name, html):
     """
     if not os.path.isdir(directory):
         os.mkdir(directory)
-    with open(os.path.join(directory, name + '.html'), 'w') as f:
+    with open(os.path.join(directory, '.'.join(name, 'html')), 'w') as f:
         f.write(beautify(html))
 
 
@@ -70,7 +70,7 @@ def generate_site(folder_path, output_path):
     Initializes jinja environment, creates desired output from the files found
     in folder_path.
     """
-    log.info("Generating site from %r", folder_path)
+    log.info("Generating site from {0}".format(folder_path))
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(
         os.path.join(folder_path, 'layout')))
     for file_path in list_files(folder_path):
@@ -81,7 +81,7 @@ def generate_site(folder_path, output_path):
         html = template.render(**data)
         name = os.path.splitext(os.path.basename(file_path))[0]
         write_output(output_path, name, html)
-        log.info("Writing %r with template %r", name, template_name)
+        log.info("Writing {0} with template {1}".format(name, template_name))
 
 
 def main():
